@@ -4,7 +4,7 @@
 	Plugin Name: Google News Sitemap
 	Plugin URI: http://andreapernici.com/wordpress/google-news-sitemap/
 	Description: Automatically generate sitemap for inclusion in Google News. Go to <a href="options-general.php?page=apgnsm.php">Settings -> Google News Sitemap</a> for setup.
-	Version: 1.0.1
+	Version: 1.0.2
 	Author: Andrea Pernici
 	Author URI: http://www.andreapernici.com/
 	
@@ -26,7 +26,7 @@
 
 	*/
 
-	$apgnsm_sitemap_version = "1.0.1";
+	$apgnsm_sitemap_version = "1.0.2";
 
 	// Aggiungiamo le opzioni di default
 	add_option('apgnsm_news_active', true);
@@ -237,8 +237,16 @@
 			
 			update_option('apgnsm_path', $newPath);
 			
-			if ($_POST['apgnsm_n_genres_type']=="blog" || $_POST['apgnsm_n_genres_type']=="PressReleases" || $_POST['apgnsm_n_genres_type']=="UserGenerated" ) update_option('apgnsm_n_genres_type', $_POST['apgnsm_n_genres_type']);
-			else update_option('apgnsm_n_genres_type', "blog");
+			if ( $_POST['apgnsm_n_genres_type']=="Blog" 
+				 || $_POST['apgnsm_n_genres_type']=="PressReleases"
+			     || $_POST['apgnsm_n_genres_type']=="UserGenerated" 
+			     || $_POST['apgnsm_n_genres_type']=="Satire" 
+				 || $_POST['apgnsm_n_genres_type']=="OpEd" 
+				 || $_POST['apgnsm_n_genres_type']=="Opinion" ) {
+				update_option('apgnsm_n_genres_type', $_POST['apgnsm_n_genres_type']);
+			} else { 
+				update_option('apgnsm_n_genres_type', "blog"); 
+			}
 			
 			if ($_POST['apgnsm_n_access_type']=="Subscription" || $_POST['apgnsm_n_access_type']=="Registration" ) update_option('apgnsm_n_access_type', $_POST['apgnsm_n_access_type']);
 			else update_option('apgnsm_n_access_type', "Subscription");
@@ -262,97 +270,160 @@
 		elseif ($apgnsm_permission == 3) $msg = "Error: there is a problem with <em>sitemap-news.xml</em>. It doesn't exist or is not writable. <a href=\"http://www.andreapernici.com/wordpress/google-news-sitemap/\" target=\"_blank\" >For help see the plugin's homepage</a>.";
 ?>
 
+<style type="text/css">
+a.sm_button {
+			padding:4px;
+			display:block;
+			padding-left:25px;
+			background-repeat:no-repeat;
+			background-position:5px 50%;
+			text-decoration:none;
+			border:none;
+		}
+		 
+.sm-padded .inside {
+	margin:12px!important;
+}
+.sm-padded .inside ul {
+	margin:6px 0 12px 0;
+}
 
-<p> 
-	<div class="wrap">
+.sm-padded .inside input {
+	padding:1px;
+	margin:0;
+}
+</style> 
+            
+
+ 
+<div class="wrap" id="sm_div">
     <h2>Google News Sitemap</h2> 
     by <strong>Andrea Pernici</strong>
-    <p>&nbsp;<a target="_blank" title="Google News Sitemap Plugin Release History" href="http://andreapernici.com/wordpress/google-news-sitemap/">Changelog</a> 
-| <a target="_blank" title="Google News Sitemap Support" href="http://andreapernici.com/wordpress/google-news-sitemap/">Support</a> 
-</p>
+    <p>
+    &nbsp;<a target="_blank" title="Google News Sitemap Plugin Release History" href="http://andreapernici.com/wordpress/google-news-sitemap/">Changelog</a> 
+    | <a target="_blank" title="Google News Sitemap Support" href="http://andreapernici.com/wordpress/google-news-sitemap/">Support</a>
+	</p>
 <?php	if ($msg) {	?>
 	<div id="message" class="error"><p><strong><?php echo $msg; ?></strong></p></div>
 <?php	}	?>
 
-<div style="width:824px;"> 
-    <div style="float:left;background-color:white;padding: 10px 10px 10px 10px;margin-right:15px;border: 1px solid #ddd;"> 
-        <div style="width:350px;height:130px;"> 
-        <h3>Donate</h3> 
-        <em>If you like this plugin and find it useful, help keep this plugin free and actively developed by going to the <a href="http://andreapernici.com/donazioni" target="_blank"><strong>donate</strong></a> page on my website.</em> 
-        <p><em>Also, don't forget to follow me on <a href="http://twitter.com/andreapernici/" target="_blank"><strong>Twitter</strong></a>.</em></p> 
+    <div style="width:824px;"> 
+        <div style="float:left;background-color:white;padding: 10px 10px 10px 10px;margin-right:15px;border: 1px solid #ddd;"> 
+            <div style="width:350px;height:130px;"> 
+            <h3>Donate</h3> 
+            <em>If you like this plugin and find it useful, help keep this plugin free and actively developed by going to the <a href="http://andreapernici.com/donazioni" target="_blank"><strong>donate</strong></a> page on my website.</em> 
+            <p><em>Also, don't forget to follow me on <a href="http://twitter.com/andreapernici/" target="_blank"><strong>Twitter</strong></a>.</em></p> 
+            </div> 
         </div> 
-    </div> 
-     
-    <div style="float:left;background-color:white;padding: 10px 10px 10px 10px;border: 1px solid #ddd;"> 
-        <div style="width:415px;height:130px;"> 
-            <h3>Google Guidelines and Credits</h3> 
-            <p><em>For any doubt refer to google guidelines <a href="http://www.google.com/support/webmasters/bin/answer.py?hl=en&answer=74288">here</a>.</em></p>
-    <p><em>Plugin by <a href="http://www.andreapernici.com">Andrea Pernici</a> with support of <a href="http://www.ghenghe.com/">Ghenghe Social Bookmark</a> and <a href="http://www.ciakprestitiemutui.com/">Ciak Prestiti e Mutui</a>. We would also like to recommend <a href="http://www.convegnogt.it/">Convegno Gt</a> to discover new important tricks for Google News Ranking.</em> </p>
+         
+        <div style="float:left;background-color:white;padding: 10px 10px 10px 10px;border: 1px solid #ddd;"> 
+            <div style="width:415px;height:130px;"> 
+                <h3>Google Guidelines and Credits</h3> 
+                <p><em>For any doubt refer to google guidelines <a href="http://www.google.com/support/webmasters/bin/answer.py?hl=en&answer=74288">here</a>.</em></p>
+        <p><em>Plugin by <a href="http://www.andreapernici.com">Andrea Pernici</a> with support of <a href="http://www.ghenghe.com/">Ghenghe Social Bookmark</a> and <a href="http://www.ciakprestitiemutui.com/">Ciak Prestiti e Mutui</a>. We would also like to recommend <a href="http://www.convegnogt.it/">Convegno Gt</a> to discover new important tricks for Google News Ranking.</em> </p>
+            </div> 
         </div> 
-    </div> 
-</div> 
+    </div>
+    <div style="clear:both";></div> 
+</div>
 
-<div style="clear:both";></div> 
 
-<h3>Settings</h3>
+
+<div id="wpbody-content"> 
+
+<div class="wrap" id="sm_div">
+
+<div id="poststuff" class="metabox-holder has-right-sidebar"> 
+    <div class="inner-sidebar"> 
+		<div id="side-sortables" class="meta-box-sortabless ui-sortable" style="position:relative;"> 
+			<div id="sm_pnres" class="postbox"> 
+				<h3 class="hndle"><span>Info plugin:</span></h3> 
+				<div class="inside"> 
+                    <a class="sm_button sm_pluginHome"    href="http://www.andreapernici.com/wordpress/google-news-sitemap/">Plugin Homepage</a> 
+                    <a class="sm_button sm_pluginList"    href="http://www.google.com/support/webmasters/bin/answer.py?hl=en&answer=74288">Google News Guidelines</a> 
+                    <a class="sm_button sm_pluginSupport" href="http://wordpress.org/extend/plugins/google-news-sitemap/">Forum</a>
+                    <a class="sm_button sm_donatePayPal"  href="http://andreapernici.com/donazioni">Donations</a>
+                </div> 
+			</div>
+        </div>
+    </div>
+
+
+
+
+<div class="has-sidebar sm-padded" > 
+					
+<div id="post-body-content" class="has-sidebar-content"> 
+
+<div class="meta-box-sortabless"> 
+                                
+<div id="sm_rebuild" class="postbox"> 
+	<h3 class="hndle"><span>Google News Sitemap settings</span></h3>
+    <div class="inside"> 
 
 		<form name="form1" method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>&amp;updated=true">
 			<input type="hidden" name="apgnsm_submit" value="apgnsm_submit" />
-			<table class="form-table">
-				<tr valign="top">
-					<th scope="row">Google News Sitemap settings</th>
-					<td>
-						<label for="apgnsm_news_active">
-							<input name="apgnsm_news_active" type="checkbox" id="apgnsm_news_active" value="1" <?php echo $apgnsm_news_active?'checked="checked"':''; ?> />
-							Create news sitemap.
-						</label><br />
-						<br />
-
-						Your Google News Name: <input name="apgnsm_n_name" type="text" id="apgnsm_n_name" value="<?php echo $apgnsm_n_name?>" /><br />
-						Your Article Language (it, en, es...): <input name="apgnsm_n_lang" type="text" id="apgnsm_n_lang" value="<?php echo $apgnsm_n_lang?>" /><br />
-						
-                        <label for="apgnsm_n_genres">
-							<input name="apgnsm_n_genres" type="checkbox" id="apgnsm_n_genres" value="1" <?php echo $apgnsm_n_genres?'checked="checked"':''; ?> />
-							Show GENRES, if possible.
-						</label><br />
-                        
-						If GENRES is defined then select the type of it: 
+            <ul>
+                <li>
+                <label for="apgnsm_news_active">
+                    <input name="apgnsm_news_active" type="checkbox" id="apgnsm_news_active" value="1" <?php echo $apgnsm_news_active?'checked="checked"':''; ?> />
+                    Create news sitemap.
+                </label>
+                </li>
+                <li><label for="apgnsm_n_name">Your Google News Name: <input name="apgnsm_n_name" type="text" id="apgnsm_n_name" value="<?php echo $apgnsm_n_name?>" /></label></li>
+				<li><label for="apgnsm_n_lang">Your Article Language (it, en, es...): <input name="apgnsm_n_lang" type="text" id="apgnsm_n_lang" value="<?php echo $apgnsm_n_lang?>" /></label></li>
+				<li>
+                <label for="apgnsm_n_genres">
+					<input name="apgnsm_n_genres" type="checkbox" id="apgnsm_n_genres" value="1" <?php echo $apgnsm_n_genres?'checked="checked"':''; ?> />
+					Show GENRES, if possible.
+				</label>
+                </li>
+                <li>
+                <label for="apgnsm_n_genres_type">If GENRES is defined then select the type of it: 
 						<select name="apgnsm_n_genres_type">
-							<option <?php echo $apgnsm_n_genres_type=="blog"?'selected="selected"':'';?> value="Blog">Blog</option>
+							<option <?php echo $apgnsm_n_genres_type=="Blog"?'selected="selected"':'';?> value="Blog">Blog</option>
 							<option <?php echo $apgnsm_n_genres_type=="PressReleases"?'selected="selected"':'';?> value="PressReleases">PressReleases</option>
 							<option <?php echo $apgnsm_n_genres_type=="UserGenerated"?'selected="selected"':'';?> value="UserGenerated">UserGenerated</option>
                             <option <?php echo $apgnsm_n_genres_type=="Satire"?'selected="selected"':'';?> value="Satire">Satire</option>
                             <option <?php echo $apgnsm_n_genres_type=="OpEd"?'selected="selected"':'';?> value="OpEd">OpEd</option>
                             <option <?php echo $apgnsm_n_genres_type=="Opinion"?'selected="selected"':'';?> value="Opinion">Opinion</option>
-                        </select><br />
-						
-                        <label for="apgnsm_n_access">
-							<input name="apgnsm_n_access" type="checkbox" id="apgnsm_n_access" value="1" <?php echo $apgnsm_n_access?'checked="checked"':''; ?> />
-							Enable limited access "Subscription" or "Registration".
-						</label><br />
-						If ACCESS is defined then select the type of it: 
-						<select name="apgnsm_n_access_type">
-							<option <?php echo $apgnsm_n_access_type=="Subscription"?'selected="selected"':'';?> value="Subscription">Subscription</option>
-							<option <?php echo $apgnsm_n_access_type=="Registration"?'selected="selected"':'';?> value="Registration">Registration</option>
-							
-						</select><br />
-
-						
-					</td>
-				</tr>
-				<tr valign="top">
-					<th scope="row">Advanced settings</th>
-					<td>
-						Sitemap path (relatively to blog's home): <input name="apgnsm_path" type="text" id="apgnsm_path" value="<?php echo $apgnsm_path?>" />
-						<br />
-					</td>
-				</tr>
-			</table>
-			<p class="submit">
-				<input type="submit" value="Save &amp; Rebuild" />
-			</p>
+                        </select>
+                </label>
+                </li>
+                <li>
+                <label for="apgnsm_n_access">
+					<input name="apgnsm_n_access" type="checkbox" id="apgnsm_n_access" value="1" <?php echo $apgnsm_n_access?'checked="checked"':''; ?> />
+					Enable limited access "Subscription" or "Registration".
+				</label>
+                </li>
+                <li>
+                <label for="apgnsm_n_access_type">
+                If ACCESS is defined then select the type of it: 
+					<select name="apgnsm_n_access_type">
+						<option <?php echo $apgnsm_n_access_type=="Subscription"?'selected="selected"':'';?> value="Subscription">Subscription</option>
+						<option <?php echo $apgnsm_n_access_type=="Registration"?'selected="selected"':'';?> value="Registration">Registration</option>		
+					</select>
+                </label>
+                </li>
+                </ul>
+                <b>Advanced settings</b>
+                <ul>
+                <li>
+                <label for="apgnsm_path">
+                Sitemap path (relatively to blog's home): <input name="apgnsm_path" type="text" id="apgnsm_path" value="<?php echo $apgnsm_path?>" />
+                </label>
+                </li>
+				</ul>	
+			<p class="submit"> <input type="submit" value="Save &amp; Rebuild" /></p>
 		</form>
-	</div>
+        </div>
+        </div>
+    </div>
+    </div>
+    </div>
+</div>
+</div> 
+</div>
 <?php
 	}
 ?>
