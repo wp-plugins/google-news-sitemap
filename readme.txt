@@ -4,7 +4,7 @@ Donate link: http://andreapernici.com/donazioni/
 Tags: sitemap xml, google news sitemap, seo, google
 Requires at least: 2.6
 Tested up to: 2.8.5
-stable tag: 1.0.0
+stable tag: 1.0.1
 
 Automatically generate sitemap for inclusion in Google News.
 
@@ -19,6 +19,12 @@ More info:
 * Example of created sitemap in [PallamanoItalia](http://www.pallamanoitalia.it/)
 
 **Changelog**
+
+= 1.0.1 =
+* graphic upgrade of admin interface.
+* Added xml escaping for loc url.
+* Added complete list of genres options.
+* Added automatic generation on post, page update and post, page delete.
 
 = 1.0.0 =
 * Added options for access and genres
