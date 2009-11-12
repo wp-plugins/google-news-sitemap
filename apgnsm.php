@@ -4,7 +4,7 @@
 	Plugin Name: Google News Sitemap
 	Plugin URI: http://andreapernici.com/wordpress/google-news-sitemap/
 	Description: Automatically generate sitemap for inclusion in Google News. Go to <a href="options-general.php?page=apgnsm.php">Settings -> Google News Sitemap</a> for setup.
-	Version: 1.0.2
+	Version: 1.0.3
 	Author: Andrea Pernici
 	Author URI: http://www.andreapernici.com/
 	
@@ -26,7 +26,7 @@
 
 	*/
 
-	$apgnsm_sitemap_version = "1.0.2";
+	$apgnsm_sitemap_version = "1.0.3";
 
 	// Aggiungiamo le opzioni di default
 	add_option('apgnsm_news_active', true);
@@ -175,23 +175,22 @@
 			<n:publication>
 				<n:name>".$apgnsm_n_name."</n:name>
 				<n:language>".$apgnsm_n_lang."</n:language>
-			</n:publication>
-			";
+			</n:publication>";
 					
 					// Se selzionato il genere allora lo aggiungo
 					if ($apgnsm_n_genres == true) {
-						$xml_sitemap_google_news .= "<n:genres>".$apgnsm_n_genres_type."</n:genres>
-						";
+						$xml_sitemap_google_news .= "
+						<n:genres>".$apgnsm_n_genres_type."</n:genres>";
 						}
 					// Se selzionato il tipo di accesso allora lo aggiungo
 					if ($apgnsm_n_access == true) {
-						$xml_sitemap_google_news .= "<n:access>".$apgnsm_n_access_type."</n:access>
-						";
+						$xml_sitemap_google_news .= "
+						<n:access>".$apgnsm_n_access_type."</n:access>";
 						}	
 						
 					$xml_sitemap_google_news .= "	
 			<n:publication_date>".str_replace(" ", "T", $post->post_date_gmt)."Z"."</n:publication_date>
-			<n:title>".$post->post_title."</n:title>
+			<n:title>".htmlspecialchars($post->post_title)."</n:title>
 		</n:news>
 	</url>";
 				}

@@ -4,7 +4,7 @@ Donate link: http://andreapernici.com/donazioni/
 Tags: sitemap xml, google news sitemap, seo, google
 Requires at least: 2.6
 Tested up to: 2.8.5
-stable tag: 1.0.2
+stable tag: 1.0.3
 
 Automatically generate sitemap for inclusion in Google News.
 
@@ -19,6 +19,9 @@ More info:
 * Example of created sitemap in [PallamanoItalia](http://www.pallamanoitalia.it/)
 
 **Changelog**
+
+= 1.0.3 =
+* htmlspecialchars added in title tag (thanks to http://technabob.com/)
 
 = 1.0.2 =
 * graphic upgrade of admin interface.
@@ -59,3 +62,7 @@ If you find any bugs or have any ideas, please mail me.
 **Advanced Users**
 
 For advanced use of the plugin, see the [Google News Sitemap](http://www.andreapernici.com/wordpress/google-news-sitemap/) page on [Andrea](http://www.andreapernici.com/)
+
+== FAQ ==
+
+Please before asking question read post and comments here http://www.andreapernici.com/wordpress/google-news-sitemap/
