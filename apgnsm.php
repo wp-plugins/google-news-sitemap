@@ -4,7 +4,7 @@
 	Plugin Name: Google News Sitemap
 	Plugin URI: http://andreapernici.com/wordpress/google-news-sitemap/
 	Description: Automatically generate sitemap for inclusion in Google News. Go to <a href="options-general.php?page=apgnsm.php">Settings -> Google News Sitemap</a> for setup.
-	Version: 1.0.3
+	Version: 1.0.4
 	Author: Andrea Pernici
 	Author URI: http://www.andreapernici.com/
 	
@@ -26,7 +26,7 @@
 
 	*/
 
-	$apgnsm_sitemap_version = "1.0.3";
+	$apgnsm_sitemap_version = "1.0.4";
 
 	// Aggiungiamo le opzioni di default
 	add_option('apgnsm_news_active', true);
@@ -43,7 +43,9 @@
 	add_option('apgnsm_n_access',false);
 	add_option('apgnsm_n_access_type','Subscription');
 	//add_option('apgnsm_n_access_type','Registration');
-	
+	//add_option('apgnsm_n_excludecat',false);
+	add_option('apgnsm_n_excludecatlist','');
+	add_option('apgnsm_n_excludepostlist','');
 	//Controllo eliminazione, pubblicazione pagine post per rebuild
 	add_action('delete_post', apgnsm_autobuild ,9999,1);	
 	add_action('publish_post', apgnsm_autobuild ,9999,1);	
@@ -142,7 +144,20 @@
 		$apgnsm_n_access = get_option('apgnsm_n_access');
 		$apgnsm_n_access_type = get_option('apgnsm_n_access_type');
 		//add_option('apgnsm_n_access_type','Registration');
-
+		//$apgnsm_n_excludecat = get_option('apgnsm_n_excludecat');
+		$apgnsm_n_excludecatlist = get_option('apgnsm_n_excludecatlist');
+		$apgnsm_n_excludepostlist = get_option('apgnsm_n_excludepostlist');
+		
+		$includeMe = '';
+		$includeNoPost = '';
+		if ( $apgnsm_n_excludecatlist <> NULL ) {
+			$exPosts = get_objects_in_term($apgnsm_n_excludecatlist,"category");
+			$includeNoCat = ' AND `ID` NOT IN ('.implode(",",$exPosts).')';
+			}
+		if ($apgnsm_n_excludepostlist != ''){
+			$includeNoPost = ' AND `ID` NOT IN ('.$apgnsm_n_excludepostlist.')';
+			}
+		
 		$apgnsm_permission = apgnsm_permissions();
 		if ($apgnsm_permission > 2 || (!$apgnsm_active && !$apgnsm_news_active)) return;
 
@@ -159,7 +174,8 @@
 	<!-- http://andreapernici.com/wordpress/google-news-sitemap/ -->
 	<!-- Created ".date("F d, Y, H:i")." -->";
 
-		$posts = $wpdb->get_results("SELECT * FROM ".$wpdb->posts." WHERE `post_status`='publish' AND (`post_type`='page' OR `post_type`='post') GROUP BY `ID` ORDER BY `post_modified_gmt` DESC");		
+		$posts = $wpdb->get_results("SELECT * FROM ".$wpdb->posts." WHERE `post_status`='publish' 
+		AND (`post_type`='page' OR `post_type`='post') ". includeNoCat . ' ' . $includeNoPost." GROUP BY `ID` ORDER BY `post_modified_gmt` DESC");		
 		
 		$now = time();
 		$twoDays = 2*24*60*60;
@@ -229,6 +245,8 @@
 			update_option('apgnsm_n_lang', $_POST['apgnsm_n_lang']);
 			update_option('apgnsm_n_access', $_POST['apgnsm_n_access']);
 			update_option('apgnsm_n_genres', $_POST['apgnsm_n_genres']);
+			update_option('apgnsm_n_excludecat', $_POST['apgnsm_n_excludecat']);
+			update_option('apgnsm_n_excludepostlist', $_POST['apgnsm_n_excludepostlist']);
 			
 			$newPath = trim($_POST['apgnsm_path']);
 			if ($newPath == "" || $newPath == "/") $newPath = "./";
@@ -247,9 +265,17 @@
 				update_option('apgnsm_n_genres_type', "blog"); 
 			}
 			
-			if ($_POST['apgnsm_n_access_type']=="Subscription" || $_POST['apgnsm_n_access_type']=="Registration" ) update_option('apgnsm_n_access_type', $_POST['apgnsm_n_access_type']);
+			if ($_POST['$apgnsm_n_access_type']=="Subscription" || $_POST['apgnsm_n_access_type']=="Registration" ) update_option('apgnsm_n_access_type', $_POST['apgnsm_n_access_type']);
 			else update_option('apgnsm_n_access_type', "Subscription");
 			
+			// Excluded category
+			$exCats = array();
+			if(isset($_POST["post_category"])) {
+				foreach((array) $_POST["post_category"] AS $vv) if(!empty($vv) && is_numeric($vv)) $exCats[] = intval($vv);
+			}
+			update_option('apgnsm_n_excludecatlist', $exCats); 
+			
+			// Sitemap generation
 			apgnsm_generate_sitemap();
 		}
 		
@@ -261,7 +287,8 @@
 		$apgnsm_n_genres_type = get_option('apgnsm_n_genres_type');
 		$apgnsm_n_access = get_option('apgnsm_n_access');
 		$apgnsm_n_access_type = get_option('apgnsm_n_access_type');
-
+		$apgnsm_n_excludepostlist = get_option('apgnsm_n_excludepostlist');
+		
 		$apgnsm_permission = apgnsm_permissions();
 		
 		if ($apgnsm_permission == 1) $msg = "Error: there is a problem with <em>sitemap-news.xml</em>. It doesn't exist or is not writable. <a href=\"http://www.andreapernici.com/wordpress/google-news-sitemap/\" target=\"_blank\" >For help see the plugin's homepage</a>.";
@@ -405,18 +432,51 @@ a.sm_button {
                 </label>
                 </li>
                 </ul>
-                <b>Advanced settings</b>
+                <b>Advanced settings - default sitemap will be generated in http://yourdomain.com/sitemap-news.xml</b>
                 <ul>
                 <li>
                 <label for="apgnsm_path">
-                Sitemap path (relatively to blog's home): <input name="apgnsm_path" type="text" id="apgnsm_path" value="<?php echo $apgnsm_path?>" />
+                Sitemap path (relatively to blog's home) (leave empty if not sure): <input name="apgnsm_path" type="text" id="apgnsm_path" value="<?php echo $apgnsm_path?>" />
                 </label>
                 </li>
 				</ul>	
+                
+           </div>
+           </div>
+                <!-- Excluded Items --> 
+                
+				<div id="sm_excludes" class="postbox"> 
+				<h3 class="hndle"><span>Escludi elementi</span></h3> 
+				
+                <div class="inside"> 
+								
+				<b>Exclude Category:</b> 
+
+<?php 
+$excludedCats = get_option('apgnsm_n_excludecatlist');
+if (!is_array($excludedCats)) $excludedCats = array();
+?>
+<div style="border-color:#CEE1EF; border-style:solid; border-width:2px; height:10em; margin:5px 0px 5px 40px; overflow:auto; padding:0.5em 0.5em;"> 
+<ul> 
+ <?php wp_category_checklist(0,0,$excludedCats,false); ?> 
+
+</ul> 
+
+</div> 
+												
+						<b>Exlclude Articles:</b> 
+						<div style="margin:5px 0 13px 40px;"> 
+							<label for="apgnsm_n_excludepost">Exclude the following articles or pages: <small>put comma separated ID (ex. 1,2,3)</small><br /> 
+							<input name="apgnsm_n_excludepostlist" id="apgnsm_n_excludepostlist" type="text" style="width:400px;" value="<?php echo $apgnsm_n_excludepostlist;?>" /></label><br /> 
+						</div> 
+						
+									</div> 
+			</div> 
+								<!-- Excluded -->
 			<p class="submit"> <input type="submit" value="Save &amp; Rebuild" /></p>
 		</form>
-        </div>
-        </div>
+        
+        
     </div>
     </div>
     </div>

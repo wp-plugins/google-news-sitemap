@@ -1,10 +1,10 @@
-=== Googe-News-Sitemap ===
-Contributors: Andrea Pernici (andreapernici)
+=== Googe News Sitemap ===
+Contributors: Andrea Pernici
 Donate link: http://andreapernici.com/donazioni/
 Tags: sitemap xml, google news sitemap, seo, google
 Requires at least: 2.6
-Tested up to: 2.8.5
-stable tag: 1.0.3
+Tested up to: 2.8.6
+stable tag: 1.0.4
 
 Automatically generate sitemap for inclusion in Google News.
 
@@ -20,8 +20,12 @@ More info:
 
 **Changelog**
 
+= 1.0.4 =
+* added exclude categories option 
+* added exclude posts option
+
 = 1.0.3 =
-* htmlspecialchars added in title tag (thanks to http://technabob.com/)
+* htmlspecialchars added in title tag (thanks to technabob.com)
 
 = 1.0.2 =
 * graphic upgrade of admin interface.
