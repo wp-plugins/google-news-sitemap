@@ -3,8 +3,8 @@ Contributors: Andrea Pernici
 Donate link: http://andreapernici.com/donazioni/
 Tags: sitemap xml, google news sitemap, seo, google
 Requires at least: 2.6
-Tested up to: 2.9.1
-stable tag: 1.0.6
+Tested up to: 3.3
+stable tag: 1.0.7
 
 Automatically generate sitemap for inclusion in Google News.
 
@@ -19,6 +19,8 @@ More info:
 * Example of created sitemap in [PallamanoItalia](http://www.pallamanoitalia.it/)
 
 **Changelog**
+= 1.0.7 =
+* solved a bug with strict mode
 
 = 1.0.6 =
 * solved bug relative to post and category exclusion
