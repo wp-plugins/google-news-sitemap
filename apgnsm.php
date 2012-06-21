@@ -4,7 +4,7 @@
 	Plugin Name: Google News Sitemap
 	Plugin URI: http://andreapernici.com/wordpress/google-news-sitemap/
 	Description: Automatically generate sitemap for inclusion in Google News. Go to <a href="options-general.php?page=apgnsm.php">Settings -> Google News Sitemap</a> for setup.
-	Version: 1.0.6
+	Version: 1.0.7
 	Author: Andrea Pernici
 	Author URI: http://www.andreapernici.com/
 	
@@ -26,7 +26,7 @@
 
 	*/
 
-	$apgnsm_sitemap_version = "1.0.6";
+	$apgnsm_sitemap_version = "1.0.7";
 
 	// Aggiungiamo le opzioni di default
 	add_option('apgnsm_news_active', true);
@@ -47,9 +47,9 @@
 	add_option('apgnsm_n_excludecatlist','');
 	add_option('apgnsm_n_excludepostlist','');
 	//Controllo eliminazione, pubblicazione pagine post per rebuild
-	add_action('delete_post', apgnsm_autobuild ,9999,1);	
-	add_action('publish_post', apgnsm_autobuild ,9999,1);	
-	add_action('publish_page', apgnsm_autobuild ,9999,1);
+	add_action('delete_post', 'apgnsm_autobuild' ,9999,1);	
+	add_action('publish_post', 'apgnsm_autobuild' ,9999,1);	
+	add_action('publish_page', 'apgnsm_autobuild' ,9999,1);
 
 	// Carichiamo le opzioni
 	$apgnsm_news_active = get_option('apgnsm_news_active');
