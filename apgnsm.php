@@ -4,7 +4,7 @@
 	Plugin Name: Google News Sitemap
 	Plugin URI: http://andreapernici.com/wordpress/google-news-sitemap/
 	Description: Automatically generate sitemap for inclusion in Google News. Go to <a href="options-general.php?page=apgnsm.php">Settings -> Google News Sitemap</a> for setup.
-	Version: 1.0.7
+	Version: 1.0.8
 	Author: Andrea Pernici
 	Author URI: http://www.andreapernici.com/
 	
@@ -26,7 +26,7 @@
 
 	*/
 
-	$apgnsm_sitemap_version = "1.0.7";
+	$apgnsm_sitemap_version = "1.0.8";
 
 	// Aggiungiamo le opzioni di default
 	add_option('apgnsm_news_active', true);
@@ -50,7 +50,8 @@
 	add_action('delete_post', 'apgnsm_autobuild' ,9999,1);	
 	add_action('publish_post', 'apgnsm_autobuild' ,9999,1);	
 	add_action('publish_page', 'apgnsm_autobuild' ,9999,1);
-
+        // Scheduled Posts fix by Elliot
+        add_action('apgnsm_scheduled', 'apgnsm_scheduled_build');
 	// Carichiamo le opzioni
 	$apgnsm_news_active = get_option('apgnsm_news_active');
 	$apgnsm_path = get_option('apgnsm_path');
@@ -113,6 +114,9 @@
 					//Pulisce tutti gli hooks.
 					wp_clear_scheduled_hook(apgnsm_generate_sitemap());
 					wp_schedule_single_event(time()+15,apgnsm_generate_sitemap());
+                                        // Elliot Fix for scheduled posts
+                                	wp_clear_scheduled_hook('apgnsm_scheduled');
+					wp_schedule_single_event(time()+15,'apgnsm_scheduled');
 					$isScheduled = true;
 				}
 			} else {
@@ -124,8 +128,13 @@
 			$lastPostID = $postID;
 		}
 	}
-	
-	
+        /*
+        Elliot Fix for scheduled posts
+        */	
+	function apgnsm_scheduled_build() {
+          apgnsm_generate_sitemap();
+        }	
+
 	function apgnsm_generate_sitemap() {
 		global $apgnsm_sitemap_version, $table_prefix;
 		global $wpdb;
@@ -154,7 +163,7 @@
 		if ( $apgnsm_n_excludecatlist <> NULL ) {
 			$exPosts = get_objects_in_term($apgnsm_n_excludecatlist,"category");
 			$includeNoCat = ' AND `ID` NOT IN ('.implode(",",$exPosts).')';
-			$ceck = implode(",",$exPosts);
+			if ($exPosts != WP_Error) { $ceck = implode(",",$exPosts); }
 			if ($ceck == '' || $ceck == ' ') $includeNoCat = '';
 			}
 		if ($apgnsm_n_excludepostlist != ''){
@@ -260,7 +269,7 @@
 			update_option('apgnsm_path', $newPath);
 			
 			if ( $_POST['apgnsm_n_genres_type']=="Blog" 
-				 || $_POST['apgnsm_n_genres_type']=="PressReleases"
+				 || $_POST['apgnsm_n_genres_type']=="PressRelease"
 			     || $_POST['apgnsm_n_genres_type']=="UserGenerated" 
 			     || $_POST['apgnsm_n_genres_type']=="Satire" 
 				 || $_POST['apgnsm_n_genres_type']=="OpEd" 
@@ -413,7 +422,7 @@ a.sm_button {
                 <label for="apgnsm_n_genres_type">If GENRES is defined then select the type of it: 
 						<select name="apgnsm_n_genres_type">
 							<option <?php echo $apgnsm_n_genres_type=="Blog"?'selected="selected"':'';?> value="Blog">Blog</option>
-							<option <?php echo $apgnsm_n_genres_type=="PressReleases"?'selected="selected"':'';?> value="PressReleases">PressReleases</option>
+							<option <?php echo $apgnsm_n_genres_type=="PressRelease"?'selected="selected"':'';?> value="PressRelease">PressRelease</option>
 							<option <?php echo $apgnsm_n_genres_type=="UserGenerated"?'selected="selected"':'';?> value="UserGenerated">UserGenerated</option>
                             <option <?php echo $apgnsm_n_genres_type=="Satire"?'selected="selected"':'';?> value="Satire">Satire</option>
                             <option <?php echo $apgnsm_n_genres_type=="OpEd"?'selected="selected"':'';?> value="OpEd">OpEd</option>
