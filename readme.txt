@@ -3,7 +3,7 @@ Contributors: Andrea Pernici
 Donate link: http://andreapernici.com/donazioni/
 Tags: sitemap xml, google news sitemap, seo, google
 Requires at least: 2.6
-Tested up to: 3.9
+Tested up to: 4.0
 stable tag: 1.0.9
 
 Automatically generate sitemap for inclusion in Google News.
